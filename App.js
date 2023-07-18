@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { Provider } from "react-redux";
+import {Provider, useDispatch, useSelector} from "react-redux";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -11,10 +11,13 @@ import COLORS from "./src/constants/colors";
 import HomeScreen from "./src/screens/HomeScreen";
 import FavoriteScreen from "./src/screens/FavoriteScreen";
 import DetailsScreen from "./src/screens/DetailScreen";
+import EditRecipeScreen from "./src/screens/EditRecipeScreen";
 import CustomSideMenu from "./src/screens/CustomSideMenu";
 import TestPage from "./src/screens/TestPage";
 import Login from "./src/screens/LoginPage";
 import store from "./redux/store"
+import AdminScreen from "./src/screens/AdminScreen";
+import CreateRecipePage from "./src/screens/CreateRecipeScreen";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -124,11 +127,28 @@ const DrawerNavigator = () => {
           ),
         }}
       />
+        <Drawer.Screen
+        name="Admin"
+        component={AdminScreen}
+        options={{
+            title: "Admin",
+            headerTitle: "Admin",
+            drawerIcon: ({ color, focused }) => (
+                <Ionicons
+                    name="albums-outline"
+                    size={focused ? 25 : 20}
+                    color={color}
+                />
+            ),
+        }}
+        />
     </Drawer.Navigator>
+
   );
 };
 
 export default function App() {
+
   return (
     <Provider store={store}>
     <NavigationContainer>
@@ -144,6 +164,9 @@ export default function App() {
           }}
         />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="EditRecipe" component={EditRecipeScreen} />
+        <Stack.Screen name="CreateRecipe" component={CreateRecipePage} />
+
       </Stack.Navigator>
     </NavigationContainer></Provider>
   );

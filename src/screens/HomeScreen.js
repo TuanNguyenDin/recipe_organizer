@@ -7,11 +7,19 @@ import CategoryList from "../components/CategoryList";
 import Card from "../components/Card";
 import { useIsFocused } from "@react-navigation/native";
 import { CATEGORIES } from "../../database/categories";
-import { RECIPES } from "../../database/recipes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useDispatch, useSelector} from "react-redux";
 
 const HomeScreen = ({ navigation }) => {
-    const [recipes, SetRecipe] = useState(RECIPES);
+    const [recipes, SetRecipe] = useState([]);
+
+    const dispatch = useDispatch();
+    const recipesd = useSelector((state) => state.recipe);
+
+    useEffect(() => {
+        SetRecipe(recipesd.recipes);
+    }, [recipesd]);
+
     const [categoryIndex, setCategoryIndex] = useState(CATEGORIES[0].id);
     const [searchQuery, setSearchQuery] = useState("");
     const [favData, setFavData] = useState([]);
@@ -32,10 +40,16 @@ const HomeScreen = ({ navigation }) => {
 
     const selectCategory = (categoryIndex) => {
         setCategoryIndex(categoryIndex);
-        if (categoryIndex == "c0") {
-            SetRecipe(RECIPES)
+        //console.log(categoryIndex);
+        if (categoryIndex === "c0") {
+            SetRecipe(recipesd.recipes);
         } else {
-            SetRecipe(RECIPES.filter((item) => item.categoryId === categoryIndex));
+            SetRecipe(recipesd.recipes.filter((item) =>
+            {
+                //console.log(item.categoryId);
+
+                return item.categoryId === categoryIndex;
+            }));
         }
     };
 
