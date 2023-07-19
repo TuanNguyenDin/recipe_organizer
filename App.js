@@ -1,12 +1,12 @@
 import "react-native-gesture-handler";
-import {Provider, useDispatch, useSelector} from "react-redux";
-import { StatusBar } from 'expo-status-bar';
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {Ionicons} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import COLORS from "./src/constants/colors";
 import HomeScreen from "./src/screens/HomeScreen";
 import FavoriteScreen from "./src/screens/FavoriteScreen";
@@ -15,7 +15,7 @@ import EditRecipeScreen from "./src/screens/EditRecipeScreen";
 import CustomSideMenu from "./src/screens/CustomSideMenu";
 import TestPage from "./src/screens/TestPage";
 import Login from "./src/screens/LoginPage";
-import store from "./redux/store"
+import store from "./redux/store";
 import AdminScreen from "./src/screens/AdminScreen";
 import CreateRecipePage from "./src/screens/CreateRecipeScreen";
 const Stack = createNativeStackNavigator();
@@ -87,6 +87,7 @@ const BottomTabNavigators = () => {
 };
 
 const DrawerNavigator = () => {
+  const { isAdmin } = useSelector((state) => state.user);
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomSideMenu {...props} />}
@@ -111,64 +112,64 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-
-      <Drawer.Screen
-        name="Test"
-        component={TestPage}
-        options={{
-          title: "Test",
-          headerTitle: "Test",
-          drawerIcon: ({ color, focused }) => (
-            <Ionicons
-              name="albums-outline"
-              size={focused ? 25 : 20}
-              color={color}
-            />
-          ),
-        }}
-      />
+      {!isAdmin ? (
         <Drawer.Screen
-        name="Admin"
-        component={AdminScreen}
-        options={{
+          name="Test"
+          component={TestPage}
+          options={{
+            title: "Admin",
+            headerTitle: "Test",
+            drawerIcon: ({ color, focused }) => (
+              <Ionicons
+                name="albums-outline"
+                size={focused ? 25 : 20}
+                color={color}
+              />
+            ),
+          }}
+        />
+      ) : (
+        <Drawer.Screen
+          name="Admin"
+          component={AdminScreen}
+          options={{
             title: "Admin",
             headerTitle: "Admin",
             drawerIcon: ({ color, focused }) => (
-                <Ionicons
-                    name="albums-outline"
-                    size={focused ? 25 : 20}
-                    color={color}
-                />
+              <Ionicons
+                name="albums-outline"
+                size={focused ? 25 : 20}
+                color={color}
+              />
             ),
-        }}
+          }}
         />
+      )}
     </Drawer.Navigator>
-
   );
 };
 
 export default function App() {
-
   return (
     <Provider store={store}>
-    <NavigationContainer>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-      <Stack.Navigator screenOptions={{ header: () => null }}>
-        <Stack.Screen
-          name="Drawer"
-          component={DrawerNavigator}
-          options={{
-            title: "All Categories",
-            headerShown: false,
-            style: { backgroundColor: COLORS.gray },
-          }}
-        />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-        <Stack.Screen name="EditRecipe" component={EditRecipeScreen} />
-        <Stack.Screen name="CreateRecipe" component={CreateRecipePage} />
-
-      </Stack.Navigator>
-    </NavigationContainer></Provider>
+      <NavigationContainer>
+        <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+        <Stack.Navigator screenOptions={{ header: () => null }}>
+          <Stack.Screen
+            name="Drawer"
+            component={DrawerNavigator}
+            options={{
+              title: "All Categories",
+              headerShown: false,
+              style: { backgroundColor: COLORS.gray },
+            }}
+          />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name="EditRecipe" component={EditRecipeScreen} />
+          <Stack.Screen name="CreateRecipe" component={CreateRecipePage} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

@@ -36,11 +36,11 @@ const LoginForm = () => {
               <View>
                 <Image
                   style={styles.avatar}
-                  source={{uri: 'https://luatduonggia.vn/wp-content/uploads/2022/03/Profile-la-gi.jpg'}}
+                  source={{uri: 'https://img.freepik.com/premium-vector/avatar-portrait-young-caucasian-boy-man-round-frame-vector-cartoon-flat-illustration_551425-19.jpg?w=1380'}}
                 />
               </View>
             </View>
-            <Button onPress={handleLogout} title="Logout" color="#841584" />
+            <Button onPress={handleLogout} title="Logout" color="#d2b48c" />
           </View>
         </View>
       ) : (
@@ -66,8 +66,9 @@ const LoginForm = () => {
 
 const styles = StyleSheet.create({
   header: {
+    backgroundColor: "#d2b48c",
     backgroundSize: "contain",
-    height: 200,
+    height: 160,
   },
 
   headerContent: {

@@ -5,7 +5,7 @@ const TestPage = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 26, fontWeight: "bold" }}>
-        Nothing in here!!!
+      you do not have permission!!!
       </Text>
     </View>
   );

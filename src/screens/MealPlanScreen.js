@@ -17,6 +17,15 @@ const MealPlanScreen = ({ navigation }) => {
     "Sunday",
   ];
 
+  const getRandomItems = (data, count) => {
+    // Sao chép mảng data để không ảnh hưởng đến mảng gốc
+    const copiedData = [...data];
+    // Sắp xếp mảng theo thứ tự ngẫu nhiên
+    const shuffledData = copiedData.sort(() => 0.5 - Math.random());
+    // Lấy phần tử từ đầu mảng
+    const randomItems = shuffledData.slice(0, count);
+    return randomItems;
+  };
   const renderItem = ({ item }) => (
     <View>
       <Text>{item}</Text>
@@ -26,7 +35,7 @@ const MealPlanScreen = ({ navigation }) => {
           justifyContent: "space-between",
         }}
         numColumns={2}
-        data={recipes}
+        data={getRandomItems(recipes,3)}
         renderItem={({ item }) => (
           <Card
             navigation={navigation}
@@ -36,17 +45,6 @@ const MealPlanScreen = ({ navigation }) => {
           />
         )}
       />
-    </View>
-  );
-  const menuItem = ({ item }) => (
-    <View style={styles.item}>
-      <Pressable
-        style={styles.itemDetails}
-        onPress={() => handleClickItem({ item })}
-      >
-        <Image style={styles.tinyLogo} source={{ uri: item.image }} />
-        <Text style={styles.title}>{item.name}</Text>
-      </Pressable>
     </View>
   );
 

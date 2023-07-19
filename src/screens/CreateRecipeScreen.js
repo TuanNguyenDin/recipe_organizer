@@ -56,46 +56,46 @@ const CreateRecipePage = ({  navigation  }) => {
                 style={styles.textInput}
                 placeholder="ID"
                 value={id}
-                onChange={(e) => setId(e.target.value)}
+                onChangeText={(e) => setId(e)}
             />
             <TextInput
                 style={styles.textInput}
                 placeholder="Name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChangeText={(e) => setName(e)}
             />
 
             <TextInput
                 style={styles.textInput}
                 placeholder="Image URL"
                 value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
+                onChangeText={(e) => setImageUrl(e)}
             />
             <TextInput
                 style={styles.textInput}
                 placeholder="Rating"
                 value={rating}
-                onChange={(e) => setRating(e.target.value)}
+                onChangeText={(e) => setRating(e)}
             />
             <TextInput
                 style={styles.longTextInput}
                 placeholder="Material"
                 multiline={true}
                 value={material}
-                onChange={(e) => setMaterial(e.target.value)}
+                onChangeText={(e) => setMaterial(e)}
             />
             <TextInput
                 style={styles.longTextInput}
                 placeholder="Cook Step"
                 multiline={true}
                 value={cookStep}
-                onChange={(e) => setCookStep(e.target.value)}
+                onChangeText={(e) => setCookStep(e)}
             />
             <TextInput
                 style={styles.textInput}
                 placeholder="Time"
                 value={time}
-                onChange={(e) => setTime(e.target.value)}
+                onChangeText={(e) => setTime(e)}
             />
             <Button
                 title="Create"
