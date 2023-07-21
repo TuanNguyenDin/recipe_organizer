@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logoutSuccess } from "../../redux/userSlice";
-import { Text, View, Button, TextInput, StyleSheet, Image } from "react-native";
+import { Text, View, Button, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -36,7 +36,9 @@ const LoginForm = () => {
               <View>
                 <Image
                   style={styles.avatar}
-                  source={{uri: 'https://img.freepik.com/premium-vector/avatar-portrait-young-caucasian-boy-man-round-frame-vector-cartoon-flat-illustration_551425-19.jpg?w=1380'}}
+                  source={{
+                    uri: "https://img.freepik.com/premium-vector/avatar-portrait-young-caucasian-boy-man-round-frame-vector-cartoon-flat-illustration_551425-19.jpg?w=1380",
+                  }}
                 />
               </View>
             </View>
@@ -44,20 +46,32 @@ const LoginForm = () => {
           </View>
         </View>
       ) : (
-        <View>
+        <View style={styles.loginContainer}>
           <TextInput
+            style={styles.inputEmail}
             keyboardType="email-address"
             placeholder="Email"
             value={email}
             onChangeText={(e) => setEmail(e)}
           />
           <TextInput
+            style={styles.inputPassword}
             secureTextEntry={true}
             placeholder="Password"
             value={password}
             onChangeText={(e) => setPassword(e)}
           />
-          <Button onPress={handleLogin} title="Login" color="#841584" />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleLogin} style={styles.button}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={handleSignUp}
+              style={[styles.button, styles.buttonOutline]}
+            >
+              <Text style={styles.buttonOutlineText}>Register</Text>
+            </TouchableOpacity> */}
+          </View>
         </View>
       )}
     </View>
@@ -99,6 +113,55 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     float: "right",
+  },
+  loginContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputEmail: {
+    width: "80%",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+  },
+  inputPassword: {
+    width: "80%",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+  },
+  button: {
+    backgroundColor: "#0782F9",
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonOutline: {
+    backgroundColor: "white",
+    marginTop: 5,
+    borderColor: "#0782F9",
+    borderWidth: 2,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  buttonOutlineText: {
+    color: "#0782F9",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  buttonContainer: {
+    width: "60%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 40,
   },
 });
 export default LoginForm;
