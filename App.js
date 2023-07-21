@@ -18,11 +18,13 @@ import Login from "./src/screens/LoginPage";
 import store from "./redux/store";
 import AdminScreen from "./src/screens/AdminScreen";
 import CreateRecipePage from "./src/screens/CreateRecipeScreen";
+import CommentScreen from "./src/screens/CommentScreen";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigators = () => {
+    const { user, isLoggedIn } = useSelector((state) => state.user);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -70,7 +72,7 @@ const BottomTabNavigators = () => {
         name="User"
         component={Login}
         options={{
-          tabBarLabel: "Login",
+          tabBarLabel: isLoggedIn ? "User" : "Login",
           // tabBarShowLabel: true,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
@@ -112,23 +114,8 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-      {!isAdmin ? (
-        <Drawer.Screen
-          name="Test"
-          component={TestPage}
-          options={{
-            title: "Admin",
-            headerTitle: "Test",
-            drawerIcon: ({ color, focused }) => (
-              <Ionicons
-                name="albums-outline"
-                size={focused ? 25 : 20}
-                color={color}
-              />
-            ),
-          }}
-        />
-      ) : (
+      {isAdmin ?? (
+
         <Drawer.Screen
           name="Admin"
           component={AdminScreen}
@@ -144,7 +131,8 @@ const DrawerNavigator = () => {
             ),
           }}
         />
-      )}
+        )}
+
     </Drawer.Navigator>
   );
 };
@@ -167,6 +155,7 @@ export default function App() {
           <Stack.Screen name="Details" component={DetailsScreen} />
           <Stack.Screen name="EditRecipe" component={EditRecipeScreen} />
           <Stack.Screen name="CreateRecipe" component={CreateRecipePage} />
+            <Stack.Screen name="CommentScreen" component={CommentScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

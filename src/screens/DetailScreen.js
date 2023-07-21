@@ -1,14 +1,33 @@
-import { StyleSheet, Text, View, Image, Animated, TouchableWithoutFeedback, ScrollView, FlatList, } from "react-native";
-import React, { useState, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {Animated, FlatList, Image, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View,} from "react-native";
+import React, {useEffect, useState} from "react";
+import {SafeAreaView} from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
-import { Ionicons, MaterialCommunityIcons, AntDesign, } from "@expo/vector-icons";
+import {AntDesign, Ionicons, MaterialCommunityIcons,} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useSelector} from "react-redux";
+import moment from "moment";
 
-const DetailsScreen = ({ navigation, route }) => {
+const DetailsScreen = ({navigation, route}) => {
     const [scaleValue, setScaleValue] = useState(new Animated.Value(1));
     const [favData, setFavData] = useState([]);
     const data = route.params;
+    const {comment} = useSelector((state) => state.comment);
+
+    // check data.id = comment.recipeId
+
+    const commentData = comment.filter((item) => item.recipeId === data.id);
+
+
+
+    // recent comment
+    const recentComment = commentData.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+    });
+
+    const lastComment = recentComment[0];
+
+
+
 
     useEffect(() => {
         getFromStorage();
@@ -67,7 +86,10 @@ const DetailsScreen = ({ navigation, route }) => {
                     onPress={() => navigation.goBack()}
                 />
                 <TouchableWithoutFeedback onPress={changeFavorite}>
-                    <Animated.View style={[{ transform: [{ scale: scaleValue }] }]}>
+                    <Animated.View style={[{
+                        transform:
+                            [{scale: scaleValue}]
+                    }]}>
                         {favData.includes(data.id) ? (
                             <MaterialCommunityIcons
                                 name="cards-heart"
@@ -85,73 +107,116 @@ const DetailsScreen = ({ navigation, route }) => {
                 </TouchableWithoutFeedback>
             </View>
             <View style={styles.imageContainer}>
-                <Image style={styles.imageItem} source={{ uri: data.imageUrl }} />
+                <Image style={styles.imageItem} source={{uri: data.imageUrl}}/>
             </View>
-            <View style={styles.detailContainer}>
-                <View style={styles.detailHeader}>
-                    <Text
-                        style={{
-                            fontSize: 22,
-                            fontWeight: "bold",
-                            flex: 4,
-                            marginLeft: 20,
-                        }}
-                    >
-                        {data.name}
-                    </Text>
-                    <View style={styles.startTag}>
-                        <AntDesign
-                            style={styles.iconStar}
-                            name="star"
-                            size={14}
-                            color="#fff700"
-                        />
+            <ScrollView
+                scrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                style={{height: 300}}
+                contentInsetAdjustmentBehavior="automatic"
+            >
+                <View style={styles.detailContainer}>
+                    <View style={styles.detailHeader}>
                         <Text
                             style={{
-                                marginLeft: 10,
-                                color: COLORS.white,
+                                fontSize: 22,
                                 fontWeight: "bold",
-                                fontSize: 16,
+                                flex: 4,
+                                marginLeft: 20,
                             }}
                         >
-                            {data.rating}
+                            {data.name}
                         </Text>
+                        <View style={styles.startTag}>
+                            <AntDesign
+                                style={styles.iconStar}
+                                name="star"
+                                size={14}
+                                color="#fff700"
+                            />
+                            <Text
+                                style={{
+                                    marginLeft: 10,
+                                    color: COLORS.white,
+                                    fontWeight: "bold",
+                                    fontSize: 16,
+                                }}
+                            >
+                                {data.rating}
+                            </Text>
+                        </View>
                     </View>
-                </View>
-                <ScrollView
-                    scrollEnabled={true}
-                    showsVerticalScrollIndicator={false}
-                    style={{ height: 300 }}
-                    contentInsetAdjustmentBehavior="automatic"
-                >
-                    <View style={{ flex: 1 }}>
+
+                    <View style={{flex: 1}}>
                         <View style={styles.aboutContainer}>
-                            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Material</Text>
+                            <Text style={{fontSize: 20, fontWeight: "bold"}}>Material</Text>
                             <FlatList
                                 data={data.material}
                                 scrollEnabled={false}
-                                renderItem={({ item, index }) => (
-                                    <Text style={{ color: "grey", marginTop: 5, fontSize: 15 }}>
+                                renderItem={({item, index}) => (
+                                    <Text style={{color: "grey", marginTop: 5, fontSize: 15}}>
                                         {index + 1} : {item}
                                     </Text>
                                 )}
                             />
                         </View>
                         <View style={styles.aboutContainer}>
-                            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Cooking Steps</Text>
+                            <Text style={{fontSize: 20, fontWeight: "bold"}}>Cooking Steps</Text>
                             <FlatList
                                 data={data.cookStep}
                                 scrollEnabled={false}
-                                renderItem={({ item, index }) => (
-                                    <Text style={{ color: "grey", marginTop: 5, fontSize: 15 }}>
+                                renderItem={({item, index}) => (
+                                    <Text style={{color: "grey", marginTop: 5, fontSize: 15}}>
                                         {index + 1} - {item}
                                     </Text>
                                 )}
                             />
                         </View>
                     </View>
-                </ScrollView>
-            </View>
+
+                </View>
+
+                {/*Comment*/}
+                <View style={styles.commentContainer}>
+                    <View style={styles.commentHeader}>
+                        <Text style={{fontSize: 20, fontWeight: "bold"}}>Comments</Text>
+                        <Text onPress={() => navigation.navigate("CommentScreen", data)}
+                                style={{fontSize: 16, color: "grey"}}>
+                            See all
+                        </Text>
+                    </View>
+                    <View style={styles.commentBody}>
+                        {lastComment && (
+                            <View style={styles.commentItem}>
+                                <View style={styles.commentHeader}>
+
+                                    <View>
+                                        <Text style={{fontSize: 12, fontWeight: "bold"}}>
+                                            {// remove email domain
+                                                lastComment.email.split("@")[0]
+                                            }
+                                        </Text>
+                                        <Text style={{fontSize: 14, color: "grey"}}>
+                                            {moment(lastComment.date).fromNow()}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Text style={{
+                                    fontSize: 16,
+                                    marginTop: 10,
+                                    backgroundColor: "#3498db",
+                                    color: COLORS.white,
+                                    padding: 10,
+                                    borderRadius: 20,
+                                    flex: 1,
+                                }}>
+                                    {lastComment.content}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -206,7 +271,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 25,
         borderBottomLeftRadius: 25,
     },
-    aboutContainer: { marginTop: 15, paddingHorizontal: 20 },
+    aboutContainer: {marginTop: 15, paddingHorizontal: 20},
     headerIcon: {
         overflow: "hidden",
         padding: 13,
@@ -215,4 +280,38 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    commentContainer: {
+        flex: 0.7,
+        backgroundColor: COLORS.light,
+        marginHorizontal: 5,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        marginTop: 15,
+    },
+    commentHeader: {
+        marginTop: 14,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 20,
+    },
+    commentBody: {
+        flex: 1,
+        marginTop: 10,
+        paddingHorizontal: 20,
+
+    },
+    commentItem: {
+        flex: 1,
+        backgroundColor: COLORS.light,
+        borderRadius: 15,
+        marginBottom: 10,
+    },
+    commentAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+    },
+
+
 });
