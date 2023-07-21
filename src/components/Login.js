@@ -1,7 +1,21 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logoutSuccess } from "../../redux/userSlice";
-import { Text, View, Button, TextInput, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  Button,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../../database/firebaseConfig";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -10,15 +24,47 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
+    if(email==='admin') {
+      dispatch(login(user, password));
+    }else{
     if (
       email !== null ||
       email !== "" ||
       password !== null ||
       password !== ""
     ) {
-      const user = { email: email, password: password };
-      dispatch(login(user));
-    }
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          dispatch(login({ email: email, password: password }));
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          if (errorCode ==='auth/wrong-password'){alert('Wrong password')}
+          if (errorCode ==='auth/invalid-email'){alert('Invalid email')}
+          if (errorCode ==='auth/user-not-found'){alert('User not found')}
+          console.log(errorCode)
+        });
+    }};
+  };
+  const handleSignUp = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user.email)
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if(errorCode ==="auth/email-already-in-use"){alert("Your email already used");}
+        if (errorCode ==='auth/invalid-email'){alert('Invalid email')}
+        console.log(errorCode)
+      });
   };
   const handleLogout = () => {
     dispatch(logoutSuccess());
@@ -65,12 +111,12 @@ const LoginForm = () => {
             <TouchableOpacity onPress={handleLogin} style={styles.button}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={handleSignUp}
               style={[styles.button, styles.buttonOutline]}
             >
               <Text style={styles.buttonOutlineText}>Register</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </View>
       )}
